@@ -85,6 +85,11 @@
             border-radius: 5px;
         }
         
+        .loading {
+            font-size: 18px;
+            color: #888;
+        }
+        
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
@@ -115,24 +120,21 @@
         <button id="first-btn">⏮ First</button>
         <button id="prev-btn">◀ Previous</button>
         <div class="page-info">
-            <span id="current-page">1</span> / <span id="total-pages">1</span>
+            <span id="current-page">1</span> / <span id="total-pages">...</span>
         </div>
         <button id="next-btn">Next ▶</button>
         <button id="last-btn">Last ⏭</button>
     </div>
     
     <script>
-        // LIST YOUR PNG FILES HERE IN ORDER
-        const comics = [
-            'B1.png',
-            'B2.png',
-            'B3.png',
-            // Add more files as you create them:
-            // 'B2.png',
-            // 'B3.png',
-        ];
+        // CONFIGURATION: Change these if needed
+        const PREFIX = 'B';  // File prefix (B1.png, B2.png, etc.)
+        const EXTENSION = '.png';  // File extension
+        const START_PAGE = 1;  // Starting page number
         
+        let comics = [];
         let currentIndex = 0;
+        let isLoading = true;
         
         const comicImage = document.getElementById('comic-image');
         const currentPageSpan = document.getElementById('current-page');
@@ -142,7 +144,63 @@
         const nextBtn = document.getElementById('next-btn');
         const lastBtn = document.getElementById('last-btn');
         
+        // Disable all buttons initially
+        function disableButtons() {
+            firstBtn.disabled = true;
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            lastBtn.disabled = true;
+        }
+        
+        // Check if a file exists
+        async function fileExists(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // Discover all comic pages
+        async function discoverComics() {
+            disableButtons();
+            totalPagesSpan.textContent = 'scanning...';
+            
+            let pageNum = START_PAGE;
+            const discovered = [];
+            
+            // Check pages sequentially until we find a missing one
+            while (true) {
+                const filename = `${PREFIX}${pageNum}${EXTENSION}`;
+                const exists = await fileExists(filename);
+                
+                if (!exists) {
+                    break;
+                }
+                
+                discovered.push(filename);
+                totalPagesSpan.textContent = discovered.length;
+                pageNum++;
+                
+                // Safety limit to prevent infinite loops
+                if (pageNum > 10000) break;
+            }
+            
+            if (discovered.length === 0) {
+                totalPagesSpan.textContent = '0';
+                comicImage.alt = 'No comics found. Make sure your files are named B1.png, B2.png, etc.';
+                return;
+            }
+            
+            comics = discovered;
+            isLoading = false;
+            updateComic();
+        }
+        
         function updateComic() {
+            if (comics.length === 0) return;
+            
             comicImage.src = comics[currentIndex];
             currentPageSpan.textContent = currentIndex + 1;
             totalPagesSpan.textContent = comics.length;
@@ -155,27 +213,31 @@
         }
         
         firstBtn.addEventListener('click', () => {
-            currentIndex = 0;
-            updateComic();
+            if (!isLoading) {
+                currentIndex = 0;
+                updateComic();
+            }
         });
         
         prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
+            if (!isLoading && currentIndex > 0) {
                 currentIndex--;
                 updateComic();
             }
         });
         
         nextBtn.addEventListener('click', () => {
-            if (currentIndex < comics.length - 1) {
+            if (!isLoading && currentIndex < comics.length - 1) {
                 currentIndex++;
                 updateComic();
             }
         });
         
         lastBtn.addEventListener('click', () => {
-            currentIndex = comics.length - 1;
-            updateComic();
+            if (!isLoading) {
+                currentIndex = comics.length - 1;
+                updateComic();
+            }
         });
         
         // Keyboard navigation
@@ -184,9 +246,8 @@
             if (e.key === 'ArrowRight') nextBtn.click();
         });
         
-        // Initialize
-        updateComic();
+        // Initialize - discover comics on load
+        discoverComics();
     </script>
 </body>
-
 </html>
