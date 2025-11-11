@@ -78,6 +78,26 @@
             cursor: not-allowed;
         }
         
+        select {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        select:hover {
+            background-color: #555;
+        }
+        
+        select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .page-info {
             font-size: 18px;
             padding: 12px 20px;
@@ -124,11 +144,14 @@
         </div>
         <button id="next-btn">Next ▶</button>
         <button id="last-btn">Last ⏭</button>
+        <select id="page-select">
+            <option value="">Jump to page...</option>
+        </select>
     </div>
     
     <script>
         // CONFIGURATION: Change these if needed
-        const PREFIXES = ['B', 'P'];  // File prefixes in order (A1.png, A2.png, B1.png, B2.png, etc.)
+        const PREFIXES = ['A', 'B', 'C'];  // File prefixes in order (A1.png, A2.png, B1.png, B2.png, etc.)
         const EXTENSION = '.png';  // File extension
         const START_PAGE = 1;  // Starting page number for each prefix
         
@@ -143,6 +166,7 @@
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const lastBtn = document.getElementById('last-btn');
+        const pageSelect = document.getElementById('page-select');
         
         // Disable all buttons initially
         function disableButtons() {
@@ -150,6 +174,23 @@
             prevBtn.disabled = true;
             nextBtn.disabled = true;
             lastBtn.disabled = true;
+            pageSelect.disabled = true;
+        }
+        
+        // Populate the dropdown with page options
+        function populateDropdown() {
+            // Clear existing options except the first one
+            pageSelect.innerHTML = '<option value="">Jump to page...</option>';
+            
+            // Add an option for each comic page
+            comics.forEach((filename, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `Page ${index + 1} (${filename})`;
+                pageSelect.appendChild(option);
+            });
+            
+            pageSelect.disabled = false;
         }
         
         // Check if a file exists
@@ -199,6 +240,7 @@
             
             comics = discovered;
             isLoading = false;
+            populateDropdown();
             updateComic();
         }
         
@@ -208,6 +250,9 @@
             comicImage.src = comics[currentIndex];
             currentPageSpan.textContent = currentIndex + 1;
             totalPagesSpan.textContent = comics.length;
+            
+            // Update dropdown selection
+            pageSelect.value = currentIndex;
             
             // Disable buttons at boundaries
             firstBtn.disabled = currentIndex === 0;
@@ -240,6 +285,15 @@
         lastBtn.addEventListener('click', () => {
             if (!isLoading) {
                 currentIndex = comics.length - 1;
+                updateComic();
+            }
+        });
+        
+        // Dropdown navigation
+        pageSelect.addEventListener('change', (e) => {
+            const selectedIndex = parseInt(e.target.value);
+            if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < comics.length) {
+                currentIndex = selectedIndex;
                 updateComic();
             }
         });
