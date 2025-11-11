@@ -59,22 +59,26 @@
         }
         
         button {
-            background-color: #444;
+            background-color: transparent;
             color: #fff;
             border: none;
-            padding: 12px 24px;
-            font-size: 16px;
+            padding: 0;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: opacity 0.3s;
+        }
+        
+        button img {
+            height: 50px;
+            width: auto;
+            display: block;
         }
         
         button:hover:not(:disabled) {
-            background-color: #555;
+            opacity: 0.8;
         }
         
         button:disabled {
-            opacity: 0.5;
+            opacity: 0.3;
             cursor: not-allowed;
         }
         
@@ -132,13 +136,13 @@
     </div>
     
     <div class="controls">
-        <button id="first-btn">⏮ First</button>
-        <button id="prev-btn">◀ Previous</button>
+        <button id="first-btn"><img src="first.png" alt="First"></button>
+        <button id="prev-btn"><img src="previous.png" alt="Previous"></button>
         <div class="page-info">
             Page <span id="current-page">1</span> / <span id="total-pages">...</span>
         </div>
-        <button id="next-btn">Next ▶</button>
-        <button id="last-btn">Last ⏭</button>
+        <button id="next-btn"><img src="next.png" alt="Next"></button>
+        <button id="last-btn"><img src="last.png" alt="Last"></button>
         <select id="page-select">
             <option value="">Jump to page...</option>
         </select>
@@ -149,6 +153,14 @@
         const PREFIXES = ['B', 'P'];
         const EXTENSION = '.png';
         const START_PAGE = 1;
+        
+        // Navigation button image filenames (change these if your files are named differently)
+        const NAV_IMAGES = {
+            first: 'first.png',
+            previous: 'previous.png',
+            next: 'next.png',
+            last: 'last.png'
+        };
         
         // State
         let comics = [];
