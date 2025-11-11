@@ -166,6 +166,7 @@
         let comics = [];
         let currentIndex = 0;
         let isScanning = false;
+        let firstPageLoaded = false;
         
         // Elements
         const comicImage = document.getElementById('comic-image');
@@ -244,7 +245,14 @@
         
         // Update comic display
         function updateComic() {
-            if (comics.length === 0) return;
+            if (comics.length === 0) {
+                // Before scan completes, show first page if it exists
+                if (!firstPageLoaded) {
+                    comicImage.src = `${PREFIXES[0]}${START_PAGE}${EXTENSION}`;
+                    firstPageLoaded = true;
+                }
+                return;
+            }
             
             comicImage.src = comics[currentIndex];
             currentPageSpan.textContent = currentIndex + 1;
@@ -301,7 +309,8 @@
             }
         });
         
-        // Initialize
+        // Initialize - load first page immediately, then scan in background
+        updateComic();
         scanAllPages();
     </script>
 </body>
