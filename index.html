@@ -135,193 +135,161 @@
         <button id="first-btn">⏮ First</button>
         <button id="prev-btn">◀ Previous</button>
         <div class="page-info">
-            Page <span id="current-page">1</span>
+            Page <span id="current-page">1</span> / <span id="total-pages">...</span>
         </div>
         <button id="next-btn">Next ▶</button>
-        <button id="last-btn" style="display:none">Last ⏭</button>
+        <button id="last-btn">Last ⏭</button>
         <select id="page-select">
             <option value="">Jump to page...</option>
         </select>
     </div>
     
     <script>
-        // CONFIGURATION: Change these if needed
-        const PREFIXES = ['B', 'P'];  // File prefixes in order
+        // CONFIGURATION
+        const PREFIXES = ['B', 'P'];
         const EXTENSION = '.png';
         const START_PAGE = 1;
         
-        // Track page structure as we discover it
-        const pageMap = new Map();  // Maps global index to filename
-        let currentGlobalIndex = 0;
-        let totalPages = 0;
+        // State
+        let comics = [];
+        let currentIndex = 0;
         let isScanning = false;
         
+        // Elements
         const comicImage = document.getElementById('comic-image');
         const currentPageSpan = document.getElementById('current-page');
+        const totalPagesSpan = document.getElementById('total-pages');
         const firstBtn = document.getElementById('first-btn');
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const lastBtn = document.getElementById('last-btn');
         const pageSelect = document.getElementById('page-select');
         
-        // Scan all pages in background without loading images
+        // Check if a file exists
+        async function fileExists(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // Scan all pages in background
         async function scanAllPages() {
             if (isScanning) return;
             isScanning = true;
             
+            totalPagesSpan.textContent = 'scanning...';
             pageSelect.disabled = true;
-            let globalIndex = 0;
+            
+            const discovered = [];
             
             for (const prefix of PREFIXES) {
                 let pageNum = START_PAGE;
                 
                 while (true) {
                     const filename = `${prefix}${pageNum}${EXTENSION}`;
+                    const exists = await fileExists(filename);
                     
-                    // Check if file exists using HEAD request (doesn't download the image)
-                    try {
-                        const response = await fetch(filename, { method: 'HEAD' });
-                        if (!response.ok) {
-                            break;  // No more pages with this prefix
-                        }
-                        
-                        pageMap.set(globalIndex, filename);
-                        globalIndex++;
-                        pageNum++;
-                        
-                        // Safety limit
-                        if (pageNum > 10000) break;
-                    } catch {
+                    if (!exists) {
                         break;
                     }
+                    
+                    discovered.push(filename);
+                    pageNum++;
+                    
+                    // Safety limit
+                    if (pageNum > 10000) break;
                 }
             }
             
-            totalPages = globalIndex;
+            comics = discovered;
             isScanning = false;
-            populateDropdown();
-            pageSelect.disabled = false;
+            
+            if (comics.length === 0) {
+                totalPagesSpan.textContent = '0';
+                comicImage.alt = 'No comics found. Make sure B1.png exists.';
+            } else {
+                populateDropdown();
+                updateComic();
+            }
         }
         
-        // Populate dropdown with all discovered pages
+        // Populate dropdown
         function populateDropdown() {
             pageSelect.innerHTML = '<option value="">Jump to page...</option>';
             
-            for (let i = 0; i < totalPages; i++) {
+            comics.forEach((filename, index) => {
                 const option = document.createElement('option');
-                option.value = i;
-                const filename = pageMap.get(i);
-                option.textContent = `Page ${i + 1} (${filename})`;
+                option.value = index;
+                option.textContent = `Page ${index + 1} (${filename})`;
                 pageSelect.appendChild(option);
-            }
+            });
+            
+            pageSelect.disabled = false;
         }
         
-        // Check if next page exists (lazy loading)
-        async function checkNextPageExists() {
-            if (totalPages > 0) {
-                // We already know total pages from scan
-                nextBtn.disabled = currentGlobalIndex >= totalPages - 1;
-                return currentGlobalIndex < totalPages - 1;
-            }
+        // Update comic display
+        function updateComic() {
+            if (comics.length === 0) return;
             
-            // Fallback if scan hasn't completed
-            const nextIndex = currentGlobalIndex + 1;
-            const nextFilename = pageMap.get(nextIndex);
-            
-            if (!nextFilename) {
-                nextBtn.disabled = true;
-                return false;
-            }
-            
-            try {
-                const response = await fetch(nextFilename, { method: 'HEAD' });
-                const exists = response.ok;
-                nextBtn.disabled = !exists;
-                return exists;
-            } catch {
-                nextBtn.disabled = true;
-                return false;
-            }
-        }
-        
-        function updateUI() {
-            const filename = pageMap.get(currentGlobalIndex);
-            
-            if (!filename) {
-                // If pageMap doesn't have this index yet, generate filename
-                const prefix = PREFIXES[0];
-                const fallbackFilename = `${prefix}${currentGlobalIndex + START_PAGE}${EXTENSION}`;
-                comicImage.src = fallbackFilename;
-            } else {
-                comicImage.src = filename;
-            }
-            
-            currentPageSpan.textContent = currentGlobalIndex + 1;
-            pageSelect.value = currentGlobalIndex;
+            comicImage.src = comics[currentIndex];
+            currentPageSpan.textContent = currentIndex + 1;
+            totalPagesSpan.textContent = comics.length;
+            pageSelect.value = currentIndex;
             
             // Update button states
-            firstBtn.disabled = currentGlobalIndex === 0;
-            prevBtn.disabled = currentGlobalIndex === 0;
-            
-            // Check if next page exists
-            checkNextPageExists();
+            firstBtn.disabled = currentIndex === 0;
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex >= comics.length - 1;
+            lastBtn.disabled = currentIndex >= comics.length - 1;
         }
         
-        // Handle image load success
-        comicImage.addEventListener('load', () => {
-            // Image loaded successfully - add to map if not already there
-            if (!pageMap.has(currentGlobalIndex)) {
-                const prefix = PREFIXES[0];
-                const filename = `${prefix}${currentGlobalIndex + START_PAGE}${EXTENSION}`;
-                pageMap.set(currentGlobalIndex, filename);
-            }
-        });
-        
-        // Handle image load errors
-        comicImage.addEventListener('error', () => {
-            if (currentGlobalIndex === 0) {
-                comicImage.alt = 'Comic not found. Make sure B1.png exists.';
-            }
-            // Don't auto-navigate back - just show the error
-            // This prevents interference with manual navigation
-        });
-        
+        // Event listeners
         firstBtn.addEventListener('click', () => {
-            currentGlobalIndex = 0;
-            updateUI();
+            currentIndex = 0;
+            updateComic();
         });
         
         prevBtn.addEventListener('click', () => {
-            if (currentGlobalIndex > 0) {
-                currentGlobalIndex--;
-                updateUI();
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateComic();
             }
         });
         
         nextBtn.addEventListener('click', () => {
-            currentGlobalIndex++;
-            nextBtn.disabled = true; // Disable until we verify next page exists
-            updateUI();
+            if (currentIndex < comics.length - 1) {
+                currentIndex++;
+                updateComic();
+            }
+        });
+        
+        lastBtn.addEventListener('click', () => {
+            currentIndex = comics.length - 1;
+            updateComic();
         });
         
         pageSelect.addEventListener('change', (e) => {
             const selectedIndex = parseInt(e.target.value);
-            if (!isNaN(selectedIndex) && selectedIndex >= 0) {
-                currentGlobalIndex = selectedIndex;
-                updateUI();
+            if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < comics.length) {
+                currentIndex = selectedIndex;
+                updateComic();
             }
         });
         
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft' && !prevBtn.disabled) prevBtn.click();
-            if (e.key === 'ArrowRight' && !nextBtn.disabled) nextBtn.click();
+            if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                prevBtn.click();
+            }
+            if (e.key === 'ArrowRight' && currentIndex < comics.length - 1) {
+                nextBtn.click();
+            }
         });
         
         // Initialize
-        updateUI();
-        
-        // Start scanning all pages in background
         scanAllPages();
     </script>
 </body>
