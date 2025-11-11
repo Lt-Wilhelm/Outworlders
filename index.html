@@ -281,11 +281,9 @@
         comicImage.addEventListener('error', () => {
             if (currentGlobalIndex === 0) {
                 comicImage.alt = 'Comic not found. Make sure B1.png exists.';
-            } else {
-                // Went too far, go back
-                currentGlobalIndex--;
-                updateUI();
             }
+            // Don't auto-navigate back - just show the error
+            // This prevents interference with manual navigation
         });
         
         firstBtn.addEventListener('click', () => {
@@ -302,6 +300,7 @@
         
         nextBtn.addEventListener('click', () => {
             currentGlobalIndex++;
+            nextBtn.disabled = true; // Disable until we verify next page exists
             updateUI();
         });
         
