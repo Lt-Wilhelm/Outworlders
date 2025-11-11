@@ -128,9 +128,9 @@
     
     <script>
         // CONFIGURATION: Change these if needed
-        const PREFIX = 'B';  // File prefix (B1.png, B2.png, etc.)
+        const PREFIXES = ['A', 'B', 'C'];  // File prefixes in order (A1.png, A2.png, B1.png, B2.png, etc.)
         const EXTENSION = '.png';  // File extension
-        const START_PAGE = 1;  // Starting page number
+        const START_PAGE = 1;  // Starting page number for each prefix
         
         let comics = [];
         let currentIndex = 0;
@@ -167,29 +167,33 @@
             disableButtons();
             totalPagesSpan.textContent = 'scanning...';
             
-            let pageNum = START_PAGE;
             const discovered = [];
             
-            // Check pages sequentially until we find a missing one
-            while (true) {
-                const filename = `${PREFIX}${pageNum}${EXTENSION}`;
-                const exists = await fileExists(filename);
+            // Check each prefix in order
+            for (const prefix of PREFIXES) {
+                let pageNum = START_PAGE;
                 
-                if (!exists) {
-                    break;
+                // Check pages sequentially for this prefix until we find a missing one
+                while (true) {
+                    const filename = `${prefix}${pageNum}${EXTENSION}`;
+                    const exists = await fileExists(filename);
+                    
+                    if (!exists) {
+                        break;
+                    }
+                    
+                    discovered.push(filename);
+                    totalPagesSpan.textContent = discovered.length;
+                    pageNum++;
+                    
+                    // Safety limit to prevent infinite loops
+                    if (pageNum > 10000) break;
                 }
-                
-                discovered.push(filename);
-                totalPagesSpan.textContent = discovered.length;
-                pageNum++;
-                
-                // Safety limit to prevent infinite loops
-                if (pageNum > 10000) break;
             }
             
             if (discovered.length === 0) {
                 totalPagesSpan.textContent = '0';
-                comicImage.alt = 'No comics found. Make sure your files are named B1.png, B2.png, etc.';
+                comicImage.alt = 'No comics found. Make sure your files are named A1.png, A2.png, B1.png, B2.png, etc.';
                 return;
             }
             
