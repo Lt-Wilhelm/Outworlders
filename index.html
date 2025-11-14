@@ -51,7 +51,7 @@
         
         .nav-side {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 15px;
         }
         
@@ -70,18 +70,21 @@
             background-position: center;
             background-color: #2a2a2a;
             padding: 20px;
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
             gap: 15px;
-            flex-wrap: wrap;
             position: relative;
         }
         
         .controls .page-info {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+            grid-column: 2;
+            justify-self: center;
+        }
+        
+        .controls select {
+            grid-column: 3;
+            justify-self: end;
         }
         
         button {
@@ -154,6 +157,18 @@
             
             .nav-side {
                 flex-direction: row;
+            }
+            
+            .controls select {
+                margin-left: 0;
+                grid-column: auto;
+                justify-self: auto;
+            }
+            
+            .controls {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
     </style>
