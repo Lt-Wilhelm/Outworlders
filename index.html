@@ -38,6 +38,21 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+        }
+        
+        .comic-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 100%;
+        }
+        
+        .nav-side {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         
         #comic-image {
@@ -61,6 +76,12 @@
             gap: 15px;
             flex-wrap: wrap;
             position: relative;
+        }
+        
+        .controls .page-info {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
         
         button {
@@ -114,18 +135,25 @@
             border-radius: 5px;
         }
         
-        @media (max-width: 600px) {
+                    @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
             }
             
-            button {
-                padding: 10px 20px;
-                font-size: 14px;
+            button img {
+                height: 35px;
             }
             
             .controls {
                 gap: 10px;
+            }
+            
+            .comic-wrapper {
+                flex-direction: column;
+            }
+            
+            .nav-side {
+                flex-direction: row;
             }
         }
     </style>
@@ -137,17 +165,25 @@
     </header>
     
     <div class="comic-container">
-        <img id="comic-image" src="" alt="Comic page">
+        <div class="comic-wrapper">
+            <div class="nav-side">
+                <button id="first-btn"><img src="first.png" alt="First"></button>
+                <button id="prev-btn"><img src="previous.png" alt="Previous"></button>
+            </div>
+            
+            <img id="comic-image" src="" alt="Comic page">
+            
+            <div class="nav-side">
+                <button id="next-btn"><img src="next.png" alt="Next"></button>
+                <button id="last-btn"><img src="last.png" alt="Last"></button>
+            </div>
+        </div>
     </div>
     
     <div class="controls">
-        <button id="first-btn"><img src="first.png" alt="First"></button>
-        <button id="prev-btn"><img src="previous.png" alt="Previous"></button>
         <div class="page-info">
             Page <span id="current-page">1</span> / <span id="total-pages">...</span>
         </div>
-        <button id="next-btn"><img src="next.png" alt="Next"></button>
-        <button id="last-btn"><img src="last.png" alt="Last"></button>
         <select id="page-select">
             <option value="">Jump to page...</option>
         </select>
