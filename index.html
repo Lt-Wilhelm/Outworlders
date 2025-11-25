@@ -30,147 +30,75 @@
         }
         
         h1 {
-            font-size: 2em;
-            margin-bottom: 5px;
+            font-size: 3em;
+            margin-bottom: 10px;
         }
         
-        .comic-container {
+        .splash-container {
             flex: 1;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            position: relative;
+            padding: 40px 20px;
+            gap: 40px;
         }
         
-        .comic-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            max-width: 100%;
+        .logo-container {
+            max-width: 600px;
+            width: 100%;
         }
         
-        .nav-side {
-            display: flex;
-            flex-direction: row;
-            gap: 15px;
-        }
-        
-        #comic-image {
-            max-width: 100%;
-            width: auto;
+        .logo-container img {
+            width: 100%;
             height: auto;
-            max-height: 80vh;
-            object-fit: contain;
-            border: 2px solid #444;
         }
         
-        .controls {
+        .nav-buttons {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-buttons a {
+            text-decoration: none;
+        }
+        
+        .nav-buttons button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            min-width: 200px;
+        }
+        
+        .nav-buttons button:hover {
+            background-color: #555;
+        }
+        
+        footer {
             background-image: url('bannerB.png');
             background-repeat: repeat;
             background-position: center;
             background-color: #2a2a2a;
             padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            gap: 15px;
-            position: relative;
+            text-align: center;
         }
         
-        .controls .page-info {
-            grid-column: 2;
-            justify-self: center;
-        }
-        
-        .controls select {
-            grid-column: 3;
-            justify-self: end;
-        }
-        
-        button {
-            background-color: transparent;
-            color: #fff;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-        
-        button img {
-            height: 50px;
-            width: auto;
-            display: block;
-        }
-        
-        button:hover:not(:disabled) {
-            opacity: 0.8;
-        }
-        
-        button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        select {
-            background-color: #444;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        
-        select:hover {
-            background-color: #555;
-        }
-        
-        select:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .page-info {
-            font-size: 18px;
-            padding: 12px 20px;
-            background-color: #333;
-            border-radius: 5px;
-        }
-        
-                    @media (max-width: 600px) {
+        @media (max-width: 600px) {
             h1 {
-                font-size: 1.5em;
+                font-size: 2em;
             }
             
-            button img {
-                height: 35px;
-            }
-            
-            .controls {
-                gap: 10px;
-            }
-            
-            .comic-wrapper {
-                flex-direction: column;
-            }
-            
-            .nav-side {
-                flex-direction: row;
-            }
-            
-            .controls select {
-                margin-left: 0;
-                grid-column: auto;
-                justify-self: auto;
-            }
-            
-            .controls {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+            .nav-buttons button {
+                padding: 15px 30px;
+                font-size: 18px;
+                min-width: 150px;
             }
         }
     </style>
@@ -181,195 +109,23 @@
         <p>A Webcomic</p>
     </header>
     
-    <div class="comic-container">
-        <div class="comic-wrapper">
-            <div class="nav-side">
-                <button id="first-btn"><img src="first.png" alt="First"></button>
-                <button id="prev-btn"><img src="previous.png" alt="Previous"></button>
-            </div>
-            
-            <img id="comic-image" src="" alt="Comic page">
-            
-            <div class="nav-side">
-                <button id="next-btn"><img src="next.png" alt="Next"></button>
-                <button id="last-btn"><img src="last.png" alt="Last"></button>
-            </div>
+    <div class="splash-container">
+        <div class="logo-container">
+            <img src="logo.png" alt="Outworlders Logo">
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="comic.html">
+                <button>Read Comic</button>
+            </a>
+            <a href="blog.html">
+                <button>Blog</button>
+            </a>
         </div>
     </div>
     
-    <div class="controls">
-        <div class="page-info">
-            Page <span id="current-page">1</span> / <span id="total-pages">...</span>
-        </div>
-        <select id="page-select">
-            <option value="">Jump to page...</option>
-        </select>
-    </div>
-    
-    <script>
-        // CONFIGURATION
-        const PREFIXES = ['B', 'P'];
-        const EXTENSION = '.png';
-        const START_PAGE = 1;
-        
-        // Navigation button image filenames (change these if your files are named differently)
-        const NAV_IMAGES = {
-            first: 'first.png',
-            previous: 'previous.png',
-            next: 'next.png',
-            last: 'last.png'
-        };
-        
-        // State
-        let comics = [];
-        let currentIndex = 0;
-        let isScanning = false;
-        let firstPageLoaded = false;
-        
-        // Elements
-        const comicImage = document.getElementById('comic-image');
-        const currentPageSpan = document.getElementById('current-page');
-        const totalPagesSpan = document.getElementById('total-pages');
-        const firstBtn = document.getElementById('first-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const lastBtn = document.getElementById('last-btn');
-        const pageSelect = document.getElementById('page-select');
-        
-        // Check if a file exists
-        async function fileExists(url) {
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                return response.ok;
-            } catch (error) {
-                return false;
-            }
-        }
-        
-        // Scan all pages in background
-        async function scanAllPages() {
-            if (isScanning) return;
-            isScanning = true;
-            
-            totalPagesSpan.textContent = 'scanning...';
-            pageSelect.disabled = true;
-            
-            const discovered = [];
-            
-            for (const prefix of PREFIXES) {
-                let pageNum = START_PAGE;
-                
-                while (true) {
-                    const filename = `${prefix}${pageNum}${EXTENSION}`;
-                    const exists = await fileExists(filename);
-                    
-                    if (!exists) {
-                        break;
-                    }
-                    
-                    discovered.push(filename);
-                    pageNum++;
-                    
-                    // Safety limit
-                    if (pageNum > 10000) break;
-                }
-            }
-            
-            comics = discovered;
-            isScanning = false;
-            
-            if (comics.length === 0) {
-                totalPagesSpan.textContent = '0';
-                comicImage.alt = 'No comics found. Make sure B1.png exists.';
-            } else {
-                populateDropdown();
-                updateComic();
-            }
-        }
-        
-        // Populate dropdown
-        function populateDropdown() {
-            pageSelect.innerHTML = '<option value="">Jump to page...</option>';
-            
-            comics.forEach((filename, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `Page ${index + 1} (${filename})`;
-                pageSelect.appendChild(option);
-            });
-            
-            pageSelect.disabled = false;
-        }
-        
-        // Update comic display
-        function updateComic() {
-            if (comics.length === 0) {
-                // Before scan completes, show first page if it exists
-                if (!firstPageLoaded) {
-                    comicImage.src = `${PREFIXES[0]}${START_PAGE}${EXTENSION}`;
-                    firstPageLoaded = true;
-                }
-                return;
-            }
-            
-            comicImage.src = comics[currentIndex];
-            currentPageSpan.textContent = currentIndex + 1;
-            totalPagesSpan.textContent = comics.length;
-            pageSelect.value = currentIndex;
-            
-            // Update button states
-            firstBtn.disabled = currentIndex === 0;
-            prevBtn.disabled = currentIndex === 0;
-            nextBtn.disabled = currentIndex >= comics.length - 1;
-            lastBtn.disabled = currentIndex >= comics.length - 1;
-        }
-        
-        // Event listeners
-        firstBtn.addEventListener('click', () => {
-            currentIndex = 0;
-            updateComic();
-        });
-        
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateComic();
-            }
-        });
-        
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < comics.length - 1) {
-                currentIndex++;
-                updateComic();
-            }
-        });
-        
-        lastBtn.addEventListener('click', () => {
-            currentIndex = comics.length - 1;
-            updateComic();
-        });
-        
-        pageSelect.addEventListener('change', (e) => {
-            const selectedIndex = parseInt(e.target.value);
-            if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < comics.length) {
-                currentIndex = selectedIndex;
-                updateComic();
-            }
-        });
-        
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft' && currentIndex > 0) {
-                prevBtn.click();
-            }
-            if (e.key === 'ArrowRight' && currentIndex < comics.length - 1) {
-                nextBtn.click();
-            }
-        });
-        
-        // Initialize - load first page immediately, then scan in background
-        updateComic();
-        scanAllPages();
-    </script>
+    <footer>
+        <p>&copy; 2024 Outworlders. All rights reserved.</p>
+    </footer>
 </body>
 </html>

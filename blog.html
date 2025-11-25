@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outworlders - Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        header {
+            background-image: url('bannerT.png');
+            background-repeat: repeat;
+            background-position: center;
+            background-color: #2a2a2a;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .home-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        
+        .home-btn img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .home-btn:hover {
+            opacity: 0.8;
+        }
+        
+        h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .blog-container {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .blog-post {
+            background-color: #2a2a2a;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            border: 2px solid #444;
+        }
+        
+        .blog-post h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .blog-date {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .blog-content {
+            line-height: 1.6;
+            color: #ddd;
+        }
+        
+        .blog-content p {
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            background-image: url('bannerB.png');
+            background-repeat: repeat;
+            background-position: center;
+            background-color: #2a2a2a;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .blog-post {
+                padding: 20px;
+            }
+            
+            .blog-post h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="home-btn">
+            <img src="home.png" alt="Home">
+        </a>
+        <h1>Outworlders</h1>
+        <p>Blog & Updates</p>
+    </header>
+    
+    <div class="blog-container">
+        <article class="blog-post">
+            <h2>Welcome to Outworlders!</h2>
+            <div class="blog-date">November 24, 2025</div>
+            <div class="blog-content">
+                <p>Welcome to the official Outworlders blog! This is where I'll be sharing updates about the comic, behind-the-scenes content, and my thoughts on the creative process.</p>
+                <p>First, this is a comic inspired by Rich Burlew's Order of the Stick, a world that I've been a fan of since early highschool. I actually tried to do a comic in the style of OOTS back then, but it took till this year to actually get everything together and give it a fair try. I figure writing out a sci-fi manuscript in the meantime helped.</p>
+                <p>Second, the journey of creating Outworlders has been quite the fun ride so far. From a visit to Japan inspiring me to write one of the protagonists, to pivoting from the written to a visual medium, there has been a lot that has gone into this ongoing learning experience.</p>
+                <p>Stay tuned for regular updates as new pages are released. Thanks for being part of this adventure!</p>
+            </div>
+        </article>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Outworlders. All rights reserved.</p>
+    </footer>
+</body>
+</html>
