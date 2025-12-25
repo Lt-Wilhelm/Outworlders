@@ -87,6 +87,11 @@
             border: 2px solid #444;
         }
         
+        #comic-image.loading {
+            min-height: 400px;
+            background: #2a2a2a;
+        }
+        
         .controls {
             background-image: url('bannerB.png');
             background-repeat: repeat;
@@ -249,6 +254,7 @@
         let currentIndex = 0;
         let isScanning = false;
         let firstPageLoaded = false;
+        let imageCache = new Map(); // Cache for preloaded images
         
         // Elements
         const comicImage = document.getElementById('comic-image');
@@ -260,13 +266,38 @@
         const lastBtn = document.getElementById('last-btn');
         const pageSelect = document.getElementById('page-select');
         
-        // Check if a file exists
+        // Check if a file exists (lightweight HEAD request)
         async function fileExists(url) {
             try {
                 const response = await fetch(url, { method: 'HEAD' });
                 return response.ok;
             } catch (error) {
                 return false;
+            }
+        }
+        
+        // Preload adjacent images
+        function preloadAdjacentImages() {
+            if (comics.length === 0) return;
+            
+            // Preload next image
+            if (currentIndex + 1 < comics.length) {
+                const nextSrc = comics[currentIndex + 1];
+                if (!imageCache.has(nextSrc)) {
+                    const img = new Image();
+                    img.src = nextSrc;
+                    imageCache.set(nextSrc, img);
+                }
+            }
+            
+            // Preload previous image
+            if (currentIndex - 1 >= 0) {
+                const prevSrc = comics[currentIndex - 1];
+                if (!imageCache.has(prevSrc)) {
+                    const img = new Image();
+                    img.src = prevSrc;
+                    imageCache.set(prevSrc, img);
+                }
             }
         }
         
