@@ -356,35 +356,17 @@
             pageSelect.disabled = false;
         }
         
-        // Quick populate with known pages only
-        function quickPopulateDropdown() {
-            pageSelect.innerHTML = '<option value="">Jump to page...</option>';
-            
-            // Add first few pages immediately
-            for (let i = 0; i < Math.min(10, comics.length); i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                const filename = comics[i] || `${PREFIXES[0]}${i + START_PAGE}${EXTENSION}`;
-                option.textContent = `Page ${i + 1}`;
-                pageSelect.appendChild(option);
-            }
-            
-            pageSelect.disabled = false;
-        }
-        
         // Update comic display
         function updateComic() {
             if (comics.length === 0) {
                 // Before scan completes, show first page if it exists
                 if (!firstPageLoaded) {
-                    comicImage.classList.add('loading');
                     comicImage.src = `${PREFIXES[0]}${START_PAGE}${EXTENSION}`;
                     firstPageLoaded = true;
                 }
                 return;
             }
             
-            comicImage.classList.add('loading');
             comicImage.src = comics[currentIndex];
             currentPageSpan.textContent = currentIndex + 1;
             totalPagesSpan.textContent = comics.length;
@@ -395,15 +377,7 @@
             prevBtn.disabled = currentIndex === 0;
             nextBtn.disabled = currentIndex >= comics.length - 1;
             lastBtn.disabled = currentIndex >= comics.length - 1;
-            
-            // Preload adjacent images for smooth navigation
-            preloadAdjacentImages();
         }
-        
-        // Remove loading state when image loads
-        comicImage.addEventListener('load', () => {
-            comicImage.classList.remove('loading');
-        });
         
         // Event listeners
         firstBtn.addEventListener('click', () => {
