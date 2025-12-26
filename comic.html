@@ -166,7 +166,13 @@
             border-radius: 5px;
         }
         
-                    @media (max-width: 600px) {
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
             }
@@ -237,24 +243,12 @@
     
     <script>
         // CONFIGURATION
-        const PREFIXES = ['B', 'P'];
-        const EXTENSION = '.png';
-        const START_PAGE = 1;
-        
-        // Navigation button image filenames (change these if your files are named differently)
-        const NAV_IMAGES = {
-            first: 'first.png',
-            previous: 'previous.png',
-            next: 'next.png',
-            last: 'last.png'
-        };
+        const PAGE_LIST_FILE = 'pageNames.txt';
         
         // State
         let comics = [];
         let currentIndex = 0;
-        let isScanning = false;
-        let firstPageLoaded = false;
-        let imageCache = new Map(); // Cache for preloaded images
+        let imageCache = new Map();
         
         // Elements
         const comicImage = document.getElementById('comic-image');
@@ -266,13 +260,35 @@
         const lastBtn = document.getElementById('last-btn');
         const pageSelect = document.getElementById('page-select');
         
-        // Check if a file exists (lightweight HEAD request)
-        async function fileExists(url) {
+        // Load page names from text file
+        async function loadPageNames() {
             try {
-                const response = await fetch(url, { method: 'HEAD' });
-                return response.ok;
+                const response = await fetch(PAGE_LIST_FILE);
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${PAGE_LIST_FILE}`);
+                }
+                
+                const text = await response.text();
+                const lines = text.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
+                
+                if (lines.length === 0) {
+                    throw new Error('No page names found in file');
+                }
+                
+                comics = lines;
+                populateDropdown();
+                updateComic();
+                
             } catch (error) {
-                return false;
+                console.error('Error loading page names:', error);
+                comicImage.alt = `Error: Could not load ${PAGE_LIST_FILE}. Make sure the file exists and contains page names.`;
+                totalPagesSpan.textContent = 'Error';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = `Failed to load ${PAGE_LIST_FILE}. Please ensure the file exists in the same directory.`;
+                document.querySelector('.comic-container').prepend(errorDiv);
             }
         }
         
@@ -301,47 +317,6 @@
             }
         }
         
-        // Scan all pages in background
-        async function scanAllPages() {
-            if (isScanning) return;
-            isScanning = true;
-            
-            totalPagesSpan.textContent = 'scanning...';
-            pageSelect.disabled = true;
-            
-            const discovered = [];
-            
-            for (const prefix of PREFIXES) {
-                let pageNum = START_PAGE;
-                
-                while (true) {
-                    const filename = `${prefix}${pageNum}${EXTENSION}`;
-                    const exists = await fileExists(filename);
-                    
-                    if (!exists) {
-                        break;
-                    }
-                    
-                    discovered.push(filename);
-                    pageNum++;
-                    
-                    // Safety limit
-                    if (pageNum > 10000) break;
-                }
-            }
-            
-            comics = discovered;
-            isScanning = false;
-            
-            if (comics.length === 0) {
-                totalPagesSpan.textContent = '0';
-                comicImage.alt = 'No comics found. Make sure B1.png exists.';
-            } else {
-                populateDropdown();
-                updateComic();
-            }
-        }
-        
         // Populate dropdown
         function populateDropdown() {
             pageSelect.innerHTML = '<option value="">Jump to page...</option>';
@@ -358,14 +333,7 @@
         
         // Update comic display
         function updateComic() {
-            if (comics.length === 0) {
-                // Before scan completes, show first page if it exists
-                if (!firstPageLoaded) {
-                    comicImage.src = `${PREFIXES[0]}${START_PAGE}${EXTENSION}`;
-                    firstPageLoaded = true;
-                }
-                return;
-            }
+            if (comics.length === 0) return;
             
             comicImage.src = comics[currentIndex];
             currentPageSpan.textContent = currentIndex + 1;
@@ -377,6 +345,9 @@
             prevBtn.disabled = currentIndex === 0;
             nextBtn.disabled = currentIndex >= comics.length - 1;
             lastBtn.disabled = currentIndex >= comics.length - 1;
+            
+            // Preload adjacent pages
+            preloadAdjacentImages();
         }
         
         // Event listeners
@@ -422,9 +393,8 @@
             }
         });
         
-        // Initialize - load first page immediately, then scan in background
-        updateComic();
-        scanAllPages();
+        // Initialize - load page names from text file
+        loadPageNames();
     </script>
 </body>
 </html>
