@@ -22,7 +22,7 @@
         }
         
         header {
-            background-image: url('bannerT.png');
+            background-image: url('Page Graphics/bannerT.png');
             background-repeat: repeat;
             background-position: center;
             background-color: #2a2a2a;
@@ -304,7 +304,7 @@
         }
         
         footer {
-            background-image: url('bannerB.png');
+            background-image: url('Page Graphics/bannerB.png');
             background-repeat: repeat;
             background-position: center;
             background-color: #2a2a2a;
@@ -333,7 +333,7 @@
 <body>
     <header>
         <a href="index.html" class="home-btn">
-            <img src="home.png" alt="Home">
+            <img src="Page Graphics/home.png" alt="Home">
         </a>
         <h1>The Realms</h1>
         <p>Explore the Material Plane</p>
@@ -343,12 +343,12 @@
         <div class="solar-system">
             <!-- Sky Father -->
             <div id="sky-father" class="celestial-body">
-                <img src="skyFather.png" alt="Sky Father">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/skyFather.png" alt="Sky Father">
             </div>
             
             <!-- Inner Ring (visual) -->
             <div id="inner-ring" style="pointer-events: none;">
-                <img src="innerRing.png" alt="Inner Ring">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/innerRing.png" alt="Inner Ring">
             </div>
             
             <!-- Inner Ring (clickable area) -->
@@ -356,22 +356,22 @@
             
             <!-- Tz-Gol (top) -->
             <div id="tz-gol" class="celestial-body">
-                <img src="tzGol.png" alt="Tz-Gol">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/tzGol.png" alt="Tz-Gol">
             </div>
             
             <!-- Yub'nisk (bottom) -->
             <div id="yubnisk" class="celestial-body">
-                <img src="yubNisk.png" alt="Yub'nisk">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/yubNisk.png" alt="Yub'nisk">
             </div>
             
             <!-- Naagard -->
             <div id="naagard" class="celestial-body">
-                <img src="Naagard.png" alt="Naagard">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/Naagard.png" alt="Naagard">
             </div>
             
             <!-- Navienna's Tears (visual) -->
             <div id="naviennas-tears" style="pointer-events: none;">
-                <img src="naviennasTears.png" alt="Navienna's Tears">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/naviennasTears.png" alt="Navienna's Tears">
             </div>
             
             <!-- Navienna's Tears (clickable area) -->
@@ -379,22 +379,22 @@
             
             <!-- Midgard -->
             <div id="midgard" class="celestial-body">
-                <img src="Midgard.png" alt="Midgard">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/Midgard.png" alt="Midgard">
             </div>
             
             <!-- Fernguard -->
             <div id="fernguard" class="celestial-body">
-                <img src="Ferngard.png" alt="Fernguard">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/Ferngard.png" alt="Fernguard">
             </div>
             
             <!-- Sigil -->
             <div id="sigil" class="celestial-body">
-                <img src="Sigil.png" alt="Sigil">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/Sigil.png" alt="Sigil">
             </div>
             
             <!-- Nameless Moon -->
             <div id="nameless-moon" class="celestial-body">
-                <img src="namelessMoon.png" alt="Nameless Moon">
+                <img src="Page Graphics/Wiki/Interactive Realms System Map/namelessMoon.png" alt="Nameless Moon">
             </div>
         </div>
     </div>
@@ -404,7 +404,7 @@
     
     <!-- Info Panel -->
     <div class="info-panel" id="info-panel">
-        <button class="close-btn" id="close-btn">✕</button>
+        <button class="close-btn" id="close-btn">âœ•</button>
         <div id="info-content"></div>
     </div>
     
@@ -417,70 +417,70 @@
         const celestialData = {
             'sky-father': {
                 name: 'The Sky Father',
-                image: 'skyFatherL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/skyFatherL.png',
                 description: `<p>The gas giant around which all the Realms orbit. It has three major storms known as the "Eyes of the Father," which are central to the myths and spiritual beliefs of every culture across the Realms.</p>
                 <p><strong>Features:</strong> Prominent rings and ring arcs. Home to air elementals, bizarre Aberrations, and several mad wizards and liches who built floating castles amid the eternal storms.</p>
                 <p><strong>Secret:</strong> The Sky Father acts as the prison of the Original Enigmatic Creator, bound at its heart during the events that sparked the God Wars.</p>`
             },
             'inner-ring-clickable': {
                 name: "The Father's Girdle",
-                image: 'innerRingL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/innerRingL.png',
                 description: `<p>A scattered ring of ice, metal, and stone orbiting close to the Sky Father.</p>
                 <p><strong>Legend:</strong> Said to be the countless bodies of primordial monsters that the Sky Father slew to establish the Realms. There may be something to these legends.</p>`
             },
             'tz-gol': {
                 name: 'Tz-Gol (Realm of Fire)',
-                image: 'tzGolL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/tzGolL.png',
                 description: `<p>Home of the enigmatic Stoneborn. This volcanic realm shares a horseshoe orbit with the ruined goblin world of Yub'nisk.</p>
-                <p><strong>Access:</strong> Visitors are forbidden except in one trade city—the Brazen Citadel. Trespassing anywhere else carries a death penalty.</p>
+                <p><strong>Access:</strong> Visitors are forbidden except in one trade cityâ€”the Brazen Citadel. Trespassing anywhere else carries a death penalty.</p>
                 <p><strong>Culture:</strong> The Stoneborn are deeply xenophobic and call their world "The Creator's Kiln." They work as mercenaries and master craftsmen when away from home.</p>`
             },
             'yubnisk': {
                 name: "Yub'nisk",
-                image: 'yubNiskL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/yubNiskL.png',
                 description: `<p>A barren, bombarded world of hard rock and acid oceans. Once the home of the goblins, the surface was devastated long before the God Wars began.</p>
                 <p><strong>History Lost:</strong> Virtually no history is known, as the goblins destroyed their own records as soon as their Tyrant God, Ulthrag, shackled them to his will.</p>
                 <p><strong>Current State:</strong> Shares a horseshoe orbit with Tz-Gol. The surface is uninhabitable, a testament to the destructive power of divine tyranny.</p>`
             },
             'naagard': {
                 name: 'Naagard',
-                image: 'NaagardL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/NaagardL.png',
                 description: `<p>A hot world of riotous jungle and scorched desert, 80% covered in mostly shallow oceans.</p>
                 <p><strong>Inhabitants:</strong> Numerous warring kingdoms dominated by Lizardfolk, Kobolds, and other reptilian humanoids. Pirates and sea peoples abound.</p>
                 <p><strong>Ruins:</strong> Plenty of ancient ruins from the God Wars wait to be explored by brave adventurers.</p>`
             },
             'naviennas-tears-clickable': {
                 name: "Navienna's Tears",
-                image: 'naviennasTearsL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/naviennasTearsL.png',
                 description: `<p>A glittering ring of debris visible in the night sky from all the Realms.</p>
                 <p><strong>Origin:</strong> The remnants of a third moon utterly destroyed in the final hours of the God Wars.</p>
                 <p><strong>Legend:</strong> Named for the tears shed by the goddess Navienna when she beheld the ruin and devastation wrought by the God Wars.</p>`
             },
             'midgard': {
                 name: 'Midgard',
-                image: 'MidgardL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/MidgardL.png',
                 description: `<p>Besides the long days and nights, Midgard has a climate very similar to Earth.</p>
                 <p><strong>Major Power:</strong> Largely dominated by the Holy Pallindros Empire, founded by followers of the god Kavren during the God Wars. The imperial core is insulated but decaying, while the frontier remains dangerous.</p>
                 <p><strong>Threats:</strong> Rampaging goblinoid hordes plague the less productive lands. Regional conflicts arise from widening cracks in imperial unity.</p>`
             },
             'fernguard': {
                 name: 'Fernguard',
-                image: 'FerngardL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/FerngardL.png',
                 description: `<p>Supposedly the outermost habitable Realm, easily accessible by teleportation magics.</p>
                 <p><strong>Climate:</strong> A thin band of habitable lands around the equator. The poles are so cold that most mortals cannot survive without special protections.</p>
-                <p><strong>Inhabitants:</strong> Demographically dominated by mammalian humanoids. Enigmatic elf clans dominate the frozen north and south where few others can survive. Food is scarce and life is hard—unless you're an elf.</p>`
+                <p><strong>Inhabitants:</strong> Demographically dominated by mammalian humanoids. Enigmatic elf clans dominate the frozen north and south where few others can survive. Food is scarce and life is hardâ€”unless you're an elf.</p>`
             },
             'sigil': {
                 name: 'Sigil',
-                image: 'SigilL.png',
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/SigilL.png',
                 description: `<p>An artificial world in the shape of a torus, owned by the Priesthood of Fortuna.</p>
                 <p><strong>Purpose:</strong> Eternal neutral ground and home of the international bank and adventuring guild (The Guild).</p>
                 <p><strong>Power:</strong> Maintains neutrality through control of the Realms' reserve currency (Solarii) and by acting as a trusted means of lawful exchange between factions.</p>`
             },
             'nameless-moon': {
                 name: 'The Nameless Moon',
-                image: 'namelessMoonL.png',
-                description: `<p>The actual outermost moon—a well-kept secret that Fernguard isn't truly the edge of the Realms.</p>
+                image: 'Page Graphics/Wiki/Interactive Realms System Map/namelessMoonL.png',
+                description: `<p>The actual outermost moonâ€”a well-kept secret that Fernguard isn't truly the edge of the Realms.</p>
                 <p><strong>Mystery:</strong> Little is known about this remote world. Possible theories include:</p>
                 <ul>
                     <li>A dumping ground for the Gods' imperfect creations</li>
